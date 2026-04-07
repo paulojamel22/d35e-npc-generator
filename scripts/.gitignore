@@ -5,3 +5,7 @@ Desktop.ini
 # IDEs
 .vscode/
 .idea/
+
+*.zip
+*.tar.gz
+*.log
