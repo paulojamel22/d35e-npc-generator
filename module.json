@@ -1,0 +1,29 @@
+{
+  "id": "d35e-npc-generator",
+  "title": "D35E - NPC Generator",
+  "description": "Gerador de NPCs via API para o sistema SRD D&D 3.5E.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "authors": [
+    {
+      "name": "Paulo",
+      "url": "https://github.com/paulojamel22"
+    }
+  ],
+  "esmodules": ["scripts/main.js"],
+  "styles": ["styles/module.css"],
+  "relationships": {
+    "systems": [
+      {
+        "id": "D35E",
+        "type": "system",
+        "compatibility": {
+          "minimum": "3.0.0"
+        }
+      }
+    ]
+  }
+}

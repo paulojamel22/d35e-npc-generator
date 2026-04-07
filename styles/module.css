@@ -1,0 +1,83 @@
+/* Container Principal da Janela */
+.d35e-generator-form {
+    padding: 10px;
+}
+
+/* Estilização dos Grupos de Formulário */
+.d35e-generator-form .form-group {
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #7a2828;
+    padding-bottom: 8px;
+}
+
+.d35e-generator-form label {
+    font-weight: bold;
+    color: #4b0000;
+    font-family: "Modesto Condensed", "Palatino Linotype", serif;
+    font-size: 1.2em;
+}
+
+/* Botão de Geração Estilizado */
+.d35e-generator-form button[name="submit"] {
+    background: #7a2828;
+    color: #f0ebe0;
+    border: 1px solid #4b0000;
+    font-family: "Modesto Condensed", serif;
+    font-size: 1.3em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+.d35e-generator-form button[name="submit"]:hover {
+    background: #9c3131;
+    box-shadow: 0 0 5px #7a2828;
+    text-shadow: 0 0 5px #fff;
+}
+
+/* Estilo do Conteúdo Gerado nas Notas (dentro da ficha) */
+.d35e-generator-result {
+    font-family: "Signika", sans-serif;
+    line-height: 1.4;
+}
+
+.d35e-generator-result h2 {
+    color: #7a2828;
+    border-bottom: 2px solid #7a2828;
+    font-variant: small-caps;
+    margin-top: 0;
+}
+
+.d35e-generator-result h3 {
+    border-bottom: 1px solid #c9c7b1;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+.d35e-generator-result ul {
+    list-style: square;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+
+.d35e-generator-result .hook-box {
+    background: rgba(122, 40, 40, 0.1);
+    border-left: 4px solid #7a2828;
+    padding: 10px;
+    margin-top: 20px;
+    font-style: italic;
+    border-radius: 0 4px 4px 0;
+}
+
+.npc-gen-btn {
+    margin: 3px 0;
+    flex: 1;
+    background: rgba(122, 40, 40, 0.2);
+    border: 1px solid #7a2828;
+    color: #4b0000;
+}
+
+.npc-gen-btn:hover {
+    background: rgba(122, 40, 40, 0.4);
+    box-shadow: 0 0 5px #7a2828;
+}
