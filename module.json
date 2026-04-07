@@ -2,7 +2,9 @@
   "id": "d35e-npc-generator",
   "title": "D35E - NPC Generator",
   "description": "Gerador de NPCs via API para o sistema SRD D&D 3.5E.",
-  "version": "1.0.0",
+  "version": "0.0.0.1 - Beta",
+  "manifest": "https://github.com/paulojamel22/d35e-npc-generator/raw/main/module.json",
+  "download": "https://github.com/paulojamel22/d35e-npc-generator/releases/download/v0.0.0.1/d35e-npc-generator.zip",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -10,7 +12,7 @@
   "authors": [
     {
       "name": "Paulo",
-      "url": "https://github.com/paulojamel22"
+      "url": "https://github.com/paulojamel22/d35e-npc-generator"
     }
   ],
   "esmodules": ["scripts/main.js"],
