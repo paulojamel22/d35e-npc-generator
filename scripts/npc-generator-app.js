@@ -96,6 +96,7 @@ export class D35ENPCGenerator extends FormApplication {
         });
 
         ui.notifications.info(`NPC ${actor.name} materializado!`);
+        this.close();
         actor.sheet.render(true);
     }
 }
