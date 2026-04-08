@@ -1,0 +1,106 @@
+<form title="{{title}}" class="d35e-generator-form">
+    {{!-- 1. Controles de Geração --}}
+    <div class="generation-controls">
+        <div class="input-stack">
+            <div class="form-group">
+                <label>Categoria</label>
+                <select name="category">
+                    {{#each categories}}
+                    <option value="{{this.id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Nível (CR)</label>
+                <select name="cr">
+                    {{#each levels}}
+                    <option value="{{this}}">{{this}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" name="submit" class="generate-btn" {{#if isGenerating}}disabled{{/if}}>
+            {{#if isGenerating}}
+                <i class="fas fa-spinner fa-spin"></i> Consultando IA...
+            {{else}}
+                <i class="fas fa-magic"></i> Gerar Sugestões
+            {{/if}}
+        </button>
+    </div>
+
+    <hr>
+
+    {{!-- 2. Área de Preview (SÓ APARECE APÓS GERAR) --}}
+    {{#if hasPreview}}
+    <div class="preview-container">
+        
+        {{!-- Coluna Esquerda: Dados da IA --}}
+        <div class="preview-details">
+            <h4><i class="fas fa-brain"></i> Sugestões da IA</h4>
+            
+            <div class="suggestion-header">
+                <div class="suggestion-tag"><strong>CR:</strong> {{npcData.cr}}</div>
+                <div class="suggestion-tag"><strong>Nome:</strong> {{npcData.name}}</div>
+                <div class="suggestion-tag"><strong>Raça:</strong> {{npcData.race}}</div>
+                <div class="suggestion-tag"><strong>Classe:</strong> {{npcData.className}} ({{npcData.level}})</div>
+            </div>
+
+            <div class="ability-scores">
+                {{#each npcData.abilities as |val abl|}}
+                    <div class="abl-badge"><strong>{{upper abl}}:</strong> {{val}}</div>
+                {{/each}}
+            </div>
+
+            <div class="scrollable-info">
+                <strong>Perícias:</strong>
+                <div class="skills-grid">
+                    {{#each npcData.skills as |rank name|}}
+                        <span class="skill-tag">{{name}}: {{rank}}</span>
+                    {{/each}}
+                </div>
+
+                <strong>Talentos:</strong>
+                <div class="feats-list">
+                    {{#each npcData.feats}}
+                        <span class="feat-badge"><i class="fas fa-fist-raised"></i> {{this}}</span>
+                    {{/each}}
+                </div>
+                <strong>Equipamento sugerido:</strong>
+                <div class="gear-suggestion">
+                    <span class="temp-item">{{npcData.gearSummary}}</span>
+                </div>
+            </div>
+        </div>
+
+        {{!-- Coluna Direita: Drop Zone do Foundry --}}
+        <div class="item-drop-zone">
+            <h4><i class="fas fa-toolbox"></i> Itens Conectados</h4>
+            
+            {{#if @root.tempItems.length}}
+                <p>Conteúdo: {{@root.tempItems.length}} itens detectados.</p>
+                <ul class="temp-item-list">
+                    {{#each @root.tempItems as |item i|}}
+                    <li class="temp-item" style="display: flex !important; visibility: visible !important;">
+                        <img src="{{item.img}}" width="20" height="20"> 
+                        <span class="item-name" style="color: black;">{{item.name}}</span>
+                        <a class="remove-item" data-index="{{i}}">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p class="hint">Arraste itens do Compendium aqui.</p>
+                <div class="empty-drop-msg">Nenhum item adicionado ainda.</div>
+            {{/if}}
+        </div>
+    </div>
+
+    {{!-- 3. Ação Final --}}
+    <button type="button" id="finalize-npc" class="finalize-btn">
+        <i class="fas fa-save"></i> Criar Ficha no Mundo
+    </button>
+    {{/if}}
+</form>

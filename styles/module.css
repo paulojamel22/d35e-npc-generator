@@ -1,83 +1,314 @@
-/* Container Principal da Janela */
+/* Container Principal */
 .d35e-generator-form {
     padding: 10px;
+    font-family: "Signika", sans-serif;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Estilização dos Grupos de Formulário */
-.d35e-generator-form .form-group {
+/* Container de Controles - Agora em Coluna */
+.generation-controls {
+    display: flex;
+    flex-direction: column; /* Alinha os itens um embaixo do outro */
+    gap: 15px;
     margin-bottom: 15px;
-    border-bottom: 1px dashed #7a2828;
-    padding-bottom: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 12px;
+    border-radius: 5px;
+    border: 1px solid #7a282833;
+}
+
+.generation-controls .form-group {
+    display: flex;
+    flex-direction: column; /* Label em cima do Select */
+    margin-bottom: 0;
+    width: 100%;
+}
+
+/* Stack de inputs para garantir que fiquem um sobre o outro */
+.input-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .d35e-generator-form label {
     font-weight: bold;
     color: #4b0000;
-    font-family: "Modesto Condensed", "Palatino Linotype", serif;
+    font-family: "Modesto Condensed", serif;
     font-size: 1.2em;
+    display: block;
 }
 
-/* Botão de Geração Estilizado */
+/* Botões de Ação */
 .d35e-generator-form button[name="submit"] {
     background: #7a2828;
     color: #f0ebe0;
     border: 1px solid #4b0000;
     font-family: "Modesto Condensed", serif;
-    font-size: 1.3em;
+    font-size: 1.2em;
+    padding: 4px 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 10px;
+    transition: all 0.2s;
 }
 
-.d35e-generator-form button[name="submit"]:hover {
+.d35e-generator-form button[name="submit"]:hover:not(:disabled) {
     background: #9c3131;
     box-shadow: 0 0 5px #7a2828;
-    text-shadow: 0 0 5px #fff;
 }
 
-/* Estilo do Conteúdo Gerado nas Notas (dentro da ficha) */
-.d35e-generator-result {
-    font-family: "Signika", sans-serif;
-    line-height: 1.4;
+.d35e-generator-form button:disabled {
+    filter: grayscale(1);
+    cursor: wait;
 }
 
-.d35e-generator-result h2 {
-    color: #7a2828;
-    border-bottom: 2px solid #7a2828;
-    font-variant: small-caps;
-    margin-top: 0;
+/* Estilo do Botão de Gerar (agora ocupando a largura total embaixo) */
+.generate-btn {
+    width: 100%;
+    height: 40px;
+    background: #7a2828 !important;
+    color: #f0ebe0 !important;
+    font-family: "Modesto Condensed", serif;
+    font-size: 1.3em !important;
+    border: 1px solid #4b0000;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.d35e-generator-result h3 {
-    border-bottom: 1px solid #c9c7b1;
-    margin-bottom: 5px;
-    margin-top: 15px;
+.generate-btn:hover:not(:disabled) {
+    background: #9c3131 !important;
 }
 
-.d35e-generator-result ul {
-    list-style: square;
-    padding-left: 20px;
+/* Ajuste visual para os selects ficarem mais largos */
+.generation-controls select {
+    width: 100%;
+    padding: 4px;
+}
+
+/* Layout de Duas Colunas (Preview) */
+.preview-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr; /* Esquerda maior para Perícias/Talentos */
+    gap: 15px;
+    margin-top: 10px;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #c9c7b1;
+    max-height: 550px; /* Limita a altura para evitar janelas infinitas */
+}
+
+/* Coluna da Esquerda (Sugestões da IA) com Scroll */
+.preview-details {
+    overflow-y: auto;
+    padding-right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Customização do Scrollbar */
+.preview-details::-webkit-scrollbar {
+    width: 4px;
+}
+.preview-details::-webkit-scrollbar-thumb {
+    background: #7a2828;
+    border-radius: 4px;
+}
+
+.preview-details h4, 
+.item-drop-zone h4 {
+    margin: 0 0 8px 0;
+    color: #4b0000;
+    font-family: "Modesto Condensed", serif;
+    border-bottom: 1px solid #7a2828;
+    font-size: 1.2em;
+}
+
+/* Tags de Sugestão (Raça, Classe) */
+.suggestion-tag {
+    background: rgba(122, 40, 40, 0.1);
+    border-left: 3px solid #7a2828;
+    padding: 4px 8px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+/* Atributos (Ability Scores) */
+.ability-scores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.abl-badge {
+    background: #1a1a1a;
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    font-size: 0.8em;
+    padding: 3px;
+    border: 1px solid #7a2828;
+    font-family: "Courier New", monospace;
+}
+
+/* Perícias (Skills) */
+.skills-suggestion {
+    background: rgba(255, 255, 255, 0.4);
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #c9c7b1;
+}
+
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
     margin-top: 5px;
 }
 
-.d35e-generator-result .hook-box {
-    background: rgba(122, 40, 40, 0.1);
-    border-left: 4px solid #7a2828;
-    padding: 10px;
-    margin-top: 20px;
+.skill-tag {
+    background: #4b4b4b;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.75em;
+    text-transform: capitalize;
+    border-bottom: 1px solid #000;
+}
+
+/* Talentos (Feats) */
+.feats-suggestion {
+    background: rgba(45, 74, 109, 0.05);
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #2d4a6d;
+}
+
+.feats-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 5px;
+}
+
+.feat-badge {
+    background: #2d4a6d;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    border: 1px solid #1a2d42;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Equipamento */
+.gear-suggestion {
+    background: rgba(122, 40, 40, 0.05);
+    padding: 8px;
+    border-radius: 4px;
     font-style: italic;
-    border-radius: 0 4px 4px 0;
 }
 
-.npc-gen-btn {
-    margin: 3px 0;
+/* Zona de Drop (Itens Conectados) */
+.item-drop-zone {
+    border: 2px dashed #7a2828;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.temp-item-list {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+    min-height: 100px;
+    max-height: 300px; /* Limita a altura */
+    overflow-y: auto;  /* Scroll interno se tiver muitos itens */
+    border: 2px dashed #7a282855;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.temp-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.1);
+    margin-bottom: 4px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    border: 1px solid #7a282833;
+    color: #4b4a44; /* Cor escura para ler no fundo claro do preview */
+}
+/* Garante que o span do nome tenha cor visível */
+.temp-item span.item-name {
     flex: 1;
-    background: rgba(122, 40, 40, 0.2);
-    border: 1px solid #7a2828;
-    color: #4b0000;
+    color: #222 !important; /* Cor bem escura */
+    font-weight: bold;
+    text-shadow: none;
 }
 
-.npc-gen-btn:hover {
-    background: rgba(122, 40, 40, 0.4);
-    box-shadow: 0 0 5px #7a2828;
+.temp-item img {
+    border: 1px solid #7a2828;
+    border-radius: 2px;
+}
+
+.item-name {
+    flex: 1;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.item-type-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    background: #7a2828;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 3px;
+    opacity: 0.8;
+}
+
+.remove-item {
+    color: #ce1111;
+    cursor: pointer;
+}
+
+/* Botão de Finalização (Verde para destacar ação final) */
+.finalize-btn {
+    width: 100%;
+    margin-top: 15px;
+    background: #2e4d2e !important;
+    color: white !important;
+    font-family: "Modesto Condensed", serif;
+    font-size: 1.4em !important;
+    border: 2px solid #1a2e1a !important;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.finalize-btn:hover {
+    background: #3e663e !important;
+    box-shadow: 0 0 8px #2e4d2e;
+}
+
+/* Utilitários */
+hr {
+    border: 0;
+    border-top: 1px solid #7a2828;
+    margin: 10px 0;
+}
+
+.hint {
+    font-size: 0.75em;
+    font-style: italic;
+    color: #555;
+    margin-bottom: 5px;
 }

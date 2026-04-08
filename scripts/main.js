@@ -24,6 +24,11 @@ Hooks.once('init', () => {
     game.modules.get("d35e-npc-generator").api = {
         D35ENPCGenerator: D35ENPCGenerator
     };
+
+    Handlebars.registerHelper('upper', function (str) {
+        if (typeof str !== 'string') return "";
+        return str.toUpperCase();
+    });
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
