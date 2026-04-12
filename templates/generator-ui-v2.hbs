@@ -18,7 +18,7 @@
                     <option value="{{this}}">{{this}}</option>
                     {{/each}}
                 </select>
-                
+
                 <label>{{localize "D35E_NPC_GEN.Language"}}</label>
                 <select name="language">
                     <option value="english" selected>English</option>
@@ -27,13 +27,15 @@
             </div>
         </div>
 
-        <button type="submit" name="submit" class="generate-btn" {{#if isGenerating}}disabled{{/if}}>
-            {{#if isGenerating}}
-                <i class="fas fa-spinner fa-spin"></i> {{localize "D35E_NPC_GEN.Consulting"}}
-            {{else}}
-                <i class="fas fa-magic"></i> {{localize "D35E_NPC_GEN.GenerateBtn"}}
-            {{/if}}
-        </button>
+        {{#if isGM}}
+            <button type="submit" name="submit" class="generate-btn" {{#if isGenerating}}disabled{{/if}}>
+                {{#if isGenerating}}
+                    <i class="fas fa-spinner fa-spin"></i> {{localize "D35E_NPC_GEN.Consulting"}}
+                {{else}}
+                    <i class="fas fa-magic"></i> {{localize "D35E_NPC_GEN.GenerateBtn"}}
+                {{/if}}
+            </button>
+        {{/if}}
     </div>
 
     <hr>

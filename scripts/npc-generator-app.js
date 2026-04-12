@@ -141,6 +141,7 @@ export class D35ENPCGenerator extends FormApplication {
                 { id: "scholar", name: game.i18n.localize("D35E_NPC_GEN.CatScholar") }
             ],
             levels: [1, 2, 3, 5, 10, 15, 20],
+            isGM: game.user.isGM,
             npcData: this.npcData,
             tempItems: Array.from(this.tempItems || []),
             isGenerating: this.isGenerating,
@@ -199,6 +200,8 @@ export class D35ENPCGenerator extends FormApplication {
 
     async _updateObject(event, formData) {
         if (this.isGenerating) return;
+
+        if (!game.user.isGM) { return; }
 
         this.isGenerating = true;
         this.render();
