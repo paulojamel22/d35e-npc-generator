@@ -35,6 +35,8 @@ Hooks.once('init', () => {
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
+    // 1. Verificação de segurança: Só executa se for GM
+    if (!game.user.isGM) return;
     // Compatibilidade V12/V13
     const $html = $(html);
 
