@@ -1,30 +1,33 @@
 import { D35ENPCGenerator } from "./npc-generator-app.js";
 
 Hooks.once('init', () => {
-    console.log("D35E NPC Generator | Inicializando...");
+    console.log("D35E NPC Generator | Initializing...");
 
+    // Configuração da API Key
     game.settings.register('d35e-npc-generator', 'apiKey', {
-        name: "Google Gemini API Key",
-        hint: "Obtenha sua chave no Google AI Studio",
+        name: game.i18n.localize("D35E_NPC_GEN.SettingsApiKeyName"),
+        hint: game.i18n.localize("D35E_NPC_GEN.SettingsApiKeyHint"),
         scope: "world",
         config: true,
         type: String,
         default: ""
     });
     
+    // Configuração do Modelo
     game.settings.register("d35e-npc-generator", "apiModel", {
-        name: "Modelo da IA",
+        name: game.i18n.localize("D35E_NPC_GEN.SettingsModelName"),
         scope: "world",
         config: true,
         type: String,
-        default: "gemini-2.5-flash"
+        default: "gemini-1.5-flash" // Corrigido para a versão estável atual
     });
 
-    // Registra na global do seu módulo para garantir visibilidade
+    // Registra na global do módulo
     game.modules.get("d35e-npc-generator").api = {
         D35ENPCGenerator: D35ENPCGenerator
     };
 
+    // Helper para transformar texto em maiúsculo (se precisar no HBS)
     Handlebars.registerHelper('upper', function (str) {
         if (typeof str !== 'string') return "";
         return str.toUpperCase();
@@ -32,20 +35,23 @@ Hooks.once('init', () => {
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
-    // Na V13, precisamos converter o html nativo para jQuery
+    // Compatibilidade V12/V13
     const $html = $(html);
 
     if ($html.find(".npc-gen-btn").length > 0) return;
 
+    // O texto do botão agora vem do i18n
+    const buttonText = game.i18n.localize("D35E_NPC_GEN.GenerateBtn");
+
     const button = $(`
         <div class="action-buttons flexrow">
             <button class="npc-gen-btn">
-                <i class="fas fa-robot"></i> Gerar NPC IA
+                <i class="fas fa-robot"></i> ${buttonText}
             </button>
         </div>
     `);
 
-    // Injetando no header para garantir compatibilidade com o sistema D35E
+    // Injeção no header do diretório de atores
     $html.find(".directory-header .header-actions").after(button);
 
     button.click((ev) => {

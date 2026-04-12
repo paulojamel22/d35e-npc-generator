@@ -1,31 +1,47 @@
 export class NPCApiService {
-    static async fetchNPCData(category, cr) {
+    static async fetchNPCData(category, cr, language = "english") {
         const apiKey = game.settings.get("d35e-npc-generator", "apiKey");
         const modelName = game.settings.get("d35e-npc-generator", "apiModel") || "gemini-1.5-flash"; 
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        
+        // Detecta o idioma do Foundry VTT
+        const currentLang = game.i18n.lang; 
+        const isEn = currentLang === 'en';
+        
+        // Define as instruções de linguagem baseadas no sistema
+        const langInstruction = isEn 
+            ? "Respond in English. Use official D&D 3.5E terminology." 
+            : "Responda em Português Brasileiro. Use a terminologia oficial do D&D 3.5E.";
 
         if (!apiKey) {
-            ui.notifications.error("D35E Generator: API Key não configurada!");
+            ui.notifications.error(game.i18n.localize("D35E_NPC_GEN.ErrorNoApiKey"));
             return null;
         }
 
-        // PROMPT AJUSTADO: Pedimos RACE, CLASS e LEVEL separados
-        const prompt = `Gere um NPC para D&D 3.5E. Categoria: ${category}, CR: ${cr}. 
-            Responda seguindo exatamente este modelo de tags:
-            [NAME] Korag, o Brutal, Leela, etc... IMPORTANTE: O nome deve ser curto, evocativo, original e não usar palavras repetidas.
-            [ALINHAMENTO] Alinhamento (ex: Leal e Bom)
-            [RACE] Humano, Elfo, Anão, etc... A raça deve ser aleatória e coerente com o CR e a classe.
-            [CLASS] Barbaro, Mago, Ladino, etc... A classe deve ser aleatória e coerente com o CR e a raça. e deve ser uma classe oficial do D&D 3.5E, sem homebrew.
+        // PROMPT INTERNACIONALIZADO v1.0.0.0
+        // Note que as tags [NAME], [STATS], etc permanecem em inglês para facilitar o seu Regex (getTag)
+        const prompt = `System: You are a D&D 3.5E expert generator. ${langInstruction}
+            Task: Generate a NPC for Category: ${category}, CR: ${cr}.
+            IMPORTANT: All text fields (name, biography, notes, and skill names) MUST be in ${language}.
+            
+            Follow exactly this tag model:
+            [NAME] Character Name and Epithet. IMPORTANT: Original, unique and evocative and not Kaelen.
+            [ALIGNMENT] Alignment (e.g., Lawful Good / Leal e Bom)
+            [RACE] Random race consistent with D&D 3.5E. Human, Elf, Dwarf, etc. (Use the official names in the chosen language)
+            [CLASS] Official 3.5E Class (No homebrew). If the NPC is a commoner, specify "Commoner". Fighter, Wizard, Rogue, etc. (Use the official names in the chosen language)
             [LEVEL] ${cr}
-            [STATS] str:10, dex:10, con:10, int:10, wis:10, cha:10 - As habilidades devem ser coerentes com a classe e raça, e adequadas para o CR. e nunca devem ser menor que 8 ou maior que 18.
-            [SKILLS] Acrobacia:5, Furtividade:3, Ouvir:4, Procurar:2, Observar:3 - As perícias devem ser coerentes com a classe e raça, e adequadas para o CR. O formato deve ser "Nome da Perícia:Valor", separados por vírgula.
-            [TALENTOS] Ataque Poderoso, Iniciativa Aprimorada
-            [HP_AC] HP:15, AC:12
-            [GEAR_SUMMARY] Lista curta de equipamentos (ex: Espada Longa, Adaga)
-            [GEAR_HTML] <ul><li>Item 1</li></ul>
-            [BIO] <p>História curta.</p>
-            [HOOK] Gancho de aventura.
-            Tudo em Português Brasileiro e Coerente com as regras do D&D 3.5E.`;
+            [STATS] str:10, dex:10, con:10, int:10, wis:10, cha:10 (Values between 8-18)
+            [SKILLS] Skill Name:Value, Skill Name:Value (Consistent with class/level)
+            [TALENTOS] Feat names separated by comma.
+            [GEAR_SUMMARY] Short equipment list string.
+            [GEAR_HTML] <ul><li>Item</li></ul>
+            [BIO] Short backstory in HTML.
+            [HOOK] Adventure hook.
+
+            Ensure the response is high quality and consistent with the requested language (${currentLang}).
+            IMPORTANT: Do not include any additional text outside of the tags. Do not explain anything. Only respond with the tagged content.
+            IMPORTANT: Avoid generating the same name repeatedly (Kaelen).
+            IMPORTANT: Avoid generating the same race/class combinations repeatedly. Be creative and varied.`;
 
         try {
             const response = await fetch(url, {
@@ -33,7 +49,10 @@ export class NPCApiService {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { temperature: 0.8 }
+                    generationConfig: { 
+                        temperature: 0.9, // Aumentado para 0.9 para evitar o bug do nome repetido (Kaelen)
+                        topP: 0.95
+                    }
                 })
             });
 
@@ -46,47 +65,54 @@ export class NPCApiService {
                 return match ? match[1].trim() : "";
             };
 
+            // Processamento de Stats e Skills
             const statsStr = getTag("STATS");
             const skillsStr = getTag("SKILLS");
             const featsStr = getTag("TALENTOS");
+            
             const skills = {};
             if (skillsStr) {
+                // No loop de skills da api-service.js:
                 skillsStr.split(",").forEach(s => {
-                    const [name, val] = s.split(":");
-                    if(name && val) skills[name.trim().toLowerCase()] = parseInt(val.trim());
+                    const parts = s.split(":");
+                    if(parts.length >= 2) {
+                        const name = parts[0].trim().toLowerCase().replace(/[.:]/g, ""); // Limpeza extra
+                        const val = parts[1].trim();
+                        skills[name] = parseInt(val);
+                    }
                 });
             }
-            const abilities = {};
-            statsStr.split(",").forEach(s => {
-                const [key, val] = s.split(":");
-                if(key && val) abilities[key.trim().toLowerCase()] = parseInt(val.trim());
-            });
 
-            // MONTAGEM DO JSON: Agora com as chaves que o Handlebars espera
+            const abilities = {};
+            if (statsStr) {
+                statsStr.split(",").forEach(s => {
+                    const [key, val] = s.split(":");
+                    if(key && val) abilities[key.trim().toLowerCase()] = parseInt(val.trim());
+                });
+            }
+
             const finalJson = {
-                name: getTag("NAME") || "NPC Desconhecido",
-                alignment: getTag("ALINHAMENTO"),
-                race: getTag("RACE"),       // <--- Agora existe separadamente
-                className: getTag("CLASS"),  // <--- Agora existe separadamente
+                name: getTag("NAME") || (isEn ? "Unknown NPC" : "NPC Desconhecido"),
+                language: language,
+                alignment: getTag("ALIGNMENT"),
+                race: getTag("RACE"),
+                className: getTag("CLASS"),
                 level: getTag("LEVEL") || cr,
                 cr: cr,
                 abilities: abilities,
                 skills: skills,
                 feats: featsStr ? featsStr.split(",").map(f => f.trim()) : [],
-                hp: getTag("HP_AC").split(",")[0]?.replace(/HP:/i, "").trim() || "10",
-                ac: getTag("HP_AC").split(",")[1]?.replace(/AC:/i, "").trim() || "10",
-                gearSummary: getTag("GEAR_SUMMARY"), // <--- Para o texto da preview
-                gearHtml: getTag("GEAR_HTML"),       // <--- Para as notas da ficha
+                gearSummary: getTag("GEAR_SUMMARY"),
+                gearHtml: getTag("GEAR_HTML"),
                 bioHtml: getTag("BIO"),
                 notesHtml: text,
                 adventureHook: getTag("HOOK")
             };
 
-            console.log("D35E Generator | Objeto Montado para Preview:", finalJson);
             return finalJson;
 
         } catch (error) {
-            console.error("D35E Generator | Erro na API do Gemini:", error);
+            console.error("D35E Generator | API Error:", error);
             return null;
         }
     }

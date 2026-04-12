@@ -3,7 +3,7 @@
     <div class="generation-controls">
         <div class="input-stack">
             <div class="form-group">
-                <label>Categoria</label>
+                <label>{{localize "D35E_NPC_GEN.Category"}}</label>
                 <select name="category">
                     {{#each categories}}
                     <option value="{{this.id}}">{{this.name}}</option>
@@ -12,20 +12,26 @@
             </div>
 
             <div class="form-group">
-                <label>Nível (CR)</label>
+                <label>{{localize "D35E_NPC_GEN.Level"}}</label>
                 <select name="cr">
                     {{#each levels}}
                     <option value="{{this}}">{{this}}</option>
                     {{/each}}
+                </select>
+                
+                <label>{{localize "D35E_NPC_GEN.Language"}}</label>
+                <select name="language">
+                    <option value="english" selected>English</option>
+                    <option value="portuguese">Português</option>
                 </select>
             </div>
         </div>
 
         <button type="submit" name="submit" class="generate-btn" {{#if isGenerating}}disabled{{/if}}>
             {{#if isGenerating}}
-                <i class="fas fa-spinner fa-spin"></i> Consultando IA...
+                <i class="fas fa-spinner fa-spin"></i> {{localize "D35E_NPC_GEN.Consulting"}}
             {{else}}
-                <i class="fas fa-magic"></i> Gerar Sugestões
+                <i class="fas fa-magic"></i> {{localize "D35E_NPC_GEN.GenerateBtn"}}
             {{/if}}
         </button>
     </div>
@@ -38,13 +44,14 @@
         
         {{!-- Coluna Esquerda: Dados da IA --}}
         <div class="preview-details">
-            <h4><i class="fas fa-brain"></i> Sugestões da IA</h4>
+            <h4><i class="fas fa-brain"></i> {{localize "D35E_NPC_GEN.AISuggestions"}}</h4>
             
             <div class="suggestion-header">
                 <div class="suggestion-tag"><strong>CR:</strong> {{npcData.cr}}</div>
-                <div class="suggestion-tag"><strong>Nome:</strong> {{npcData.name}}</div>
-                <div class="suggestion-tag"><strong>Raça:</strong> {{npcData.race}}</div>
-                <div class="suggestion-tag"><strong>Classe:</strong> {{npcData.className}} ({{npcData.level}})</div>
+                <div class="suggestion-tag"><strong>{{localize "D35E_NPC_GEN.Name"}}</strong> {{npcData.name}}</div>
+                <div class="suggestion-tag"><strong>{{localize "D35E_NPC_GEN.Alignment"}}</strong> {{npcData.alignment}}</div>
+                <div class="suggestion-tag"><strong>{{localize "D35E_NPC_GEN.Race"}}</strong> {{npcData.race}}</div>
+                <div class="suggestion-tag"><strong>{{localize "D35E_NPC_GEN.Class"}}</strong> {{npcData.className}} ({{npcData.level}})</div>
             </div>
 
             <div class="ability-scores">
@@ -54,20 +61,20 @@
             </div>
 
             <div class="scrollable-info">
-                <strong>Perícias:</strong>
+                <strong>{{localize "D35E_NPC_GEN.Skills"}}</strong>
                 <div class="skills-grid">
                     {{#each npcData.skills as |rank name|}}
                         <span class="skill-tag">{{name}}: {{rank}}</span>
                     {{/each}}
                 </div>
 
-                <strong>Talentos:</strong>
+                <strong>{{localize "D35E_NPC_GEN.Feats"}}</strong>
                 <div class="feats-list">
                     {{#each npcData.feats}}
                         <span class="feat-badge"><i class="fas fa-fist-raised"></i> {{this}}</span>
                     {{/each}}
                 </div>
-                <strong>Equipamento sugerido:</strong>
+                <strong>{{localize "D35E_NPC_GEN.Gear"}}</strong>
                 <div class="gear-suggestion">
                     <span class="temp-item">{{npcData.gearSummary}}</span>
                 </div>
@@ -76,10 +83,9 @@
 
         {{!-- Coluna Direita: Drop Zone do Foundry --}}
         <div class="item-drop-zone">
-            <h4><i class="fas fa-toolbox"></i> Itens Conectados</h4>
+            <h4><i class="fas fa-toolbox"></i> {{localize "D35E_NPC_GEN.LinkedItems"}}</h4>
             
             {{#if @root.tempItems.length}}
-                <p>Conteúdo: {{@root.tempItems.length}} itens detectados.</p>
                 <ul class="temp-item-list">
                     {{#each @root.tempItems as |item i|}}
                     <li class="temp-item" style="display: flex !important; visibility: visible !important;">
@@ -92,15 +98,15 @@
                     {{/each}}
                 </ul>
             {{else}}
-                <p class="hint">Arraste itens do Compendium aqui.</p>
-                <div class="empty-drop-msg">Nenhum item adicionado ainda.</div>
+                <p class="hint">{{localize "D35E_NPC_GEN.Hint"}}</p>
+                <div class="empty-drop-msg">{{localize "D35E_NPC_GEN.EmptyItems"}}</div>
             {{/if}}
         </div>
     </div>
 
     {{!-- 3. Ação Final --}}
     <button type="button" id="finalize-npc" class="finalize-btn">
-        <i class="fas fa-save"></i> Criar Ficha no Mundo
+        <i class="fas fa-save"></i> {{localize "D35E_NPC_GEN.Materialize"}}
     </button>
     {{/if}}
 </form>
